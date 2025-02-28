@@ -56,15 +56,83 @@
             background: #fff;
             color: #000;
         }
+        .button-85 {
+  padding: 0.6em 2em;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-85:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button-85 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-button-85 {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.button-85:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
     </style>
 </head>
 <body>
     <h1>Games</h1>
     <div class="buttons">
-        <a href="g-hub.html" class="btn">G-hub</a>
-        <a href="digdig.io.html" class="btn">digdig.io</a>
-        <a href="freznova.html" class="btn">Freeze Nova</a>
-        <a href="Xhub.html" class="btn">Xhub</a>
+        <a href="g-hub.html" class="button-85">G-hub</a>
+        <a href="digdig.io.html" class="button-85">digdig.io</a>
+        <a href="freznova.html" class="button-85">Freeze Nova</a>
+        <a href="Xhub.html" class="button-85">Xhub</a>
+        <a href="proxy.html" class="button-85">Proxy 1</a>
+        <a href="Jobi.html" class="button-85">Proxy 2</a>
     </div>
 </body>
 </html>
