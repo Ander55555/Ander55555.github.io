@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta name="description" content="...">
+  <style>
+    body {
+      background: url('https://labyrinth-games.neocities.org/IMG_0625.jpeg') no-repeat center center/cover;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      color: white; /* Ensure the text color is visible */
+    }
+    h1 {
+      font-size: 2em; /* Increase size if necessary */
+      margin-top: 100px; /* Adjust spacing as needed */
+      text-align: center; /* Center align the text */
+    }
+    #searchInput {
+      width: 300px; /* Make input wider */
+      height: 40px; /* Increase height */
+      font-size: 1.2em; /* Increase font size */
+      padding: 5px; /* Add padding */
+      margin-right: 10px; /* Space between input and button */
+    }
+    input[type="button"] {
+      width: 100px; /* Increase width */
+      height: 40px; /* Increase height */
+      font-size: 1.2em; /* Increase font size */
+      cursor: pointer; /* Add pointer cursor on hover */
+    }
+    .crt {
+      text-align: center; /* Center all content within this div */
+      padding-top: 150px; /* Adjust padding to position content better */
+    }
+  </style>
+</head>
+<body>
+  <div class="crt">
+    <br>
+    <br>
+    <br>
+    <input type="text" id="devcodein" placeholder="Devcode" />
+    <input type="button" value="go" onclick="redirectcode()" />
+    <script>
+      function redirectcode() {
+        var codename = document.getElementById('devcodein').value;
+        if (codename = "digdig") {
+          window.location.href = digdig.io.html;
+        } 
+        if (codename = "ex") {
+          window.location.href = ex.html;
+        }
+      }
+    </script>
+  </div>
+</body>
+</html>
+<!--Made by Dr. MacGutsy @ https://themaczone.neocities.org/ & Psionic @ https://psionicblades.neocities.org/-->

@@ -1,0 +1,214 @@
+<head>
+<link rel="stylesheet" href="https://thegportal.neocities.org/style.css">
+<script src="e-key.js"></script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2GLK05RC89"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2GLK05RC89');
+</script>
+
+<title>Proxy</title>
+
+<!--Font-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700&display=swap" rel="stylesheet">
+
+<style>
+.btn {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #fff;
+  color: #fff;
+  padding: 10px 20px;
+  margin: 10px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  transition: 0.3s;
+}
+.btn:hover {
+  background: #fff;
+  color: #000;
+}
+body {
+  background: url('https://labyrinth-games.neocities.org/IMG_0625.jpeg') no-repeat center center/cover;
+}
+</style>
+</head>
+
+<body id="body">
+<div id="pframe" style="display: block;">
+<center>
+<div id="particles-js">
+<script src=
+        "particles.js">
+    </script>
+    <script src=
+        "app.js">
+</script>
+</div>
+</center>
+</div>
+
+<script>
+var th = localStorage.getItem('themes');
+th = parseInt(th);
+checkBG();
+
+function checkBG() {
+  if (th == 0) {
+    body.style.background = "linear-gradient(to right, #005eb5, #3d0075)";
+    } if (th == 1) {
+    body.style.background = "linear-gradient(to right, #ff0000, #910000)";
+  } if (th == 2) {
+    body.style.background = "#141414";
+  } if (th == 3) {
+    body.style.background = "linear-gradient(to right, #1bb000, #106900)";
+  } if (th == 4) {
+    body.style.background = "linear-gradient(to right, #db00d4, #780074)";
+  } if (th == 5) {
+    body.style.background = "linear-gradient(to right, #e6d602, #7a7200)";
+  }
+}
+
+var tp = localStorage.getItem('particlet');
+tp = parseInt(tp);
+checkp();
+
+function checkp() {
+  if (tp == 0) {
+    pframe.style.display = "block";
+    ptoggle.innerHTML = "Particles are enabled";
+    ptoggle.style.background = "green";
+  } if (tp == 1) {
+    pframe.style.display = "none";
+    ptoggle.innerHTML = "Particles are disabled";
+    ptoggle.style.background = "red";
+  } if (tp > 1) {
+    tp = 0;
+    checkp();
+  }
+}
+</script>
+
+<div style="position: fixed; right: 0; z-index: 999999;">
+<button class="c key" onclick="emergency()" style="margin: 0; z-index: 9999999999;">E-Key</button>
+</div>
+<!--Logo-->
+<div>
+<a class="logo c" href="index.html"><img src="GHub Logo 4 Simple Light.png" width="auto" height="5.7%"></a>
+</div>
+
+<!--Content-->
+
+<center>
+<p class="c" style="font-size: 30; width: 232; margin: 6;">Proxy</p>
+<div class="c sect">
+</div>
+
+<div id="addContent" style="margin: 6;">
+<input id="nameid" class="c" style="border: none; border-radius: 10px; height: 40; width: 300; font-family: oxanium;" type="text" placeholder="Enter the name here">
+<input id="urlid" class="c" style="border: none; border-radius: 10px; height: 40; width: 300; font-family: oxanium;" type="text" placeholder="Enter the URL here">
+</div>
+
+<div id="warning" style="color: red; margin-bottom: 4; padding: 6 0; display: none;" class="c sect"></div>
+
+<button class="c btn" onclick="add()" style="margin: 0; font-family: oxanium;">Add Content</button>
+<button class="c btn" onclick="deleteA()" style="margin: 0; font-family: oxanium;">Delete All</button>
+<button class="c btn" onclick="closeC()" style="margin: 0; font-family: oxanium;">Close Content</button>
+<button class="c btn" onclick="openFullscreen()" style="margin: 0; font-family: oxanium;">Full Screen</button>
+
+<div class="c" id="contentselect" style="margin: 6; z-index: 0;"></div>
+
+<div class="c" id="ubButton"></div>
+
+<div class="c" id="contentFrame" style="width: 100%; height: 96.5%; display: none; background: white;"></div>
+<script>
+var elem = document.getElementById("contentFrame");
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+</script>
+
+<script>
+var cs = localStorage.getItem('contents');
+document.getElementById('contentselect').innerHTML = cs;
+
+function add() {
+  var name = document.getElementById('nameid').value;
+  if (name === '') {
+    document.getElementById('warning').style.display = 'block';
+    document.getElementById('warning').innerHTML = 'A name is needed.';
+  } else {
+    var link = document.getElementById('urlid').value;
+    if (link.includes('.')) {
+      if (link.includes('http://')) {
+        document.getElementById('warning').style.display = 'block';
+        document.getElementById('warning').innerHTML = 'URL is invalid. (Invalid protocol; "http://" is used.)';
+      } else {
+        if (link.includes('https://')) {
+          link = link;
+        } else {
+          link = 'https://' + link;
+        }
+        contentselect.innerHTML = contentselect.innerHTML + '<a class="hyperlink link txt" onclick="openContent(\'' + link + '\')" style="word-wrap: break-word; margin: 6; z-index: 10;" title="' + name + ' (' + link + ')">' + name + '</a>';
+        localStorage.setItem('contents', contentselect.innerHTML);
+        document.getElementById('warning').innerHTML = '';
+        document.getElementById('warning').style.display = 'none';
+      }
+    } else {
+      document.getElementById('warning').style.display = 'block';
+      document.getElementById('warning').innerHTML = 'URL is invalid. (Invalid domain)';
+    }
+  }
+  
+}
+
+function deleteA() {
+  document.getElementById('warning').style.display = 'block';
+  document.getElementById('warning').innerHTML = '<button class="c btn" onclick="deleteB()" style="font-family: oxanium;">Confirm Deletion</button><button class="c btn" onclick="cancelD()" style="font-family: oxanium;">Cancel</button>';
+}
+
+function deleteB() {
+  contentselect.innerHTML = '';
+  localStorage.setItem('contents', contentselect.innerHTML);
+  document.getElementById('warning').innerHTML = '';
+  document.getElementById('warning').style.display = 'none';
+}
+
+function cancelD() {
+  document.getElementById('warning').innerHTML = '';
+  document.getElementById('warning').style.display = 'none';
+}
+
+function closeC() {
+  contentFrame.innerHTML = '';
+  ubButton.innerHTML = '';
+  contentFrame.style.display = "none";
+}
+
+function openContent(url) {
+  ubButton.innerHTML = '<button class="c btn" onclick="unblockC(\'' + url + '\')" style="margin: 6; margin-top: 0; font-family: oxanium;">Unblock (If blocked)</button>';
+  contentFrame.innerHTML = '<hr style="margin: 0; width: 100%; border-radius: 0; background: black;">' + '<p style="position: absolute; width: 100%; text-align: center; color: black;">If your content doesn\'t load, that either means that you made a typo in your URL, or the site refused to connect.</p><object class="c" style="width: 100%; height: 100%;" data="' + url + '"></object>';
+  contentFrame.style.display = "block";
+}
+
+function unblockC(url) {
+  var cwindow = window.open('/');
+  cwindow.document.write(`<frameset><frame src="`+ url + `"></frameset>`);
+}
+</script>
+</center>
+
+</body>

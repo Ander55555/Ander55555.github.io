@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>labyrinth-games</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        body {
+            background: url('https://labyrinth-games.neocities.org/IMG_0625.jpeg') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8);
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8); }
+            100% { text-shadow: 0px 0px 20px rgba(255, 255, 255, 1); }
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 10px 20px;
+            margin: 10px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Other Things</h1>
+    <div class="buttons">
+        <a href="chat.html" class="btn">Chat</a>
+        <a href="devcode.html" class="btn">devcodes</a>
+    </div>
+</body>
+</html>
