@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>labyrinth-games</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+    <header>
+        <a href="https://ander55555.github.io/index2.html" target="_blank" title="Play on Labyrinth!"><img alt="Site button for Labyrinth" width="88" height="50" src="https://ander55555.github.io/logo.png"></a>
+    </header>
+    <div id="pframe" style="display: block;">
+    <center>
+    <div id="particles-js">
+    <script src=
+            "https://thegportal.neocities.org/particles.js">
+        </script>
+        <script src=
+            "https://thegportal.neocities.org/app.js">
+    </script>
+    <style>
+        he {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        body {
+            background: url('https://labyrinth-games.neocities.org/IMG_0625.jpeg') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8);
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8); }
+            100% { text-shadow: 0px 0px 20px rgba(255, 255, 255, 1); }
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 10px 20px;
+            margin: 10px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #fff;
+            color: #000;
+        }
+        .button-85 {
+  padding: 0.6em 2em;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-85:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button-85 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-button-85 {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+        
+.button-85:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+    </style>
+</head>
+<body>
+    <h1>Games</h1>
+    <a href="g-hub.html" class="button-85">G-hub</a>
+    <a href="digdig.io.html" class="button-85">digdig.io</a>
+    <a href="freznova.html" class="button-85">Freeze Nova</a>
+    <a href="Xhub.html" class="button-85">Xhub</a>
+    <a href="proxy.html" class="button-85">Proxy 1</a>
+    <a href="Jobi.html" class="button-85">Proxy 2</a>
+    <a href="foodstars.html" class="button-85">Food Stars</a>
+    </div>
+    </center>
+    </div>
+</body>
+</html>
