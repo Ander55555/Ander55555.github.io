@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetterBrowseOS</title>
+</head>
+<body>
+    <button onclick="w1()" style=" left: 1.5%;" class="button">💾</button>
+    <button onclick="w2()" style=" left: 16.5%;" class="button">🎞️</button>
+    <button onclick="w3()" style=" left: 31.5%;"class="button">📄</button>
+    <button onclick="w4()" style=" left: 46.5%;" class="button">🔎</button>
+    <button onclick="w5()" style=" left: 61.5%;" class="button">🤖</button>
+    <button onclick="w6()" style=" left: 76.5%;" class="button">🎮</button>
+    <button onclick="w7()" style=" left: 95%;" class="button">🖊️</button>
+    <style>
+        body {text-align: center; color: white;background: linear-gradient(to right, violet, orange);; border-radius: 6px; padding: 10px;}
+        .button-container {
+        position: relative;
+        height: 100%;
+        }
+        .button {
+            box-shadow: white 1px 0 10px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+        .button:hover{
+            padding: 15px;
+            box-shadow: black 1px 0 10px;
+        }
+        button{padding: 10px; border-radius: 5px; box-shadow: #0f0 1px 0 10px;}
+    </style>
+    <script>
+        var loggedin = 0
+        const version = 1.0;
+        const key = localStorage.getItem("key");
+        const BBOSUsername = localStorage.getItem("user");
+        const BBSFOSS = localStorage.getItem("BBOS174836728");
+        const BBSFOSF = localStorage.getItem("BBOS475694029");
+        const BBSFOSP = localStorage.getItem("BBOS786794959");
+        //localStorage.setItem("BBOS174836728", "");
+        function boot(){
+            setTimeout(() => {
+                if (BBSFOSS == null || BBSFOSS == ""){
+                    console.log("New user!");
+                    newUser();
+                }else{
+                    if (BBSFOSS != NaN){
+                        login();
+                    }else{
+                        console.log("Error, data loss");
+                        newUser();
+                    }
+                }
+            }, 1);
+        }
+        function newUser(){
+            document.write("<h1>BetterBrowseOS~</h1>")
+            document.write("<h1>________________________________</h1>");
+            document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, yellow, green);; text-shadow: #0f0 1px 0 10px;} input{color: #555; background-color: color; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;} button {color: #555; background-color: white; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;}</style>");
+            document.write("<h1>Username: </h1>");
+            let p1 = document.createElement("input");
+            p1.type = 'Text';
+            p1.id = 'user';
+            p1.placeholder = 'Username here: ';
+            document.body.appendChild(p1);
+            document.write("<h1>Password: </h1>");
+            let p2 = document.createElement("input");
+            p2.type = 'Text';
+            p2.id = 'pass'
+            p2.placeholder = 'Password here: ';
+            document.body.appendChild(p2);
+            document.write("<h1>________________________________</h1>");
+            var b1 = document.createElement('button');
+            b1.innerHTML = 'Submit!';
+            b1.onclick = function() {
+                BBOSS();
+            };
+            document.body.appendChild(b1);
+            function BBOSS(){
+                let userName = document.getElementById("user").value;
+                let password = document.getElementById("pass").value;
+                if (userName != null && userName != '' && password != null && password != ''){
+                    console.log(userName + " " + password);
+                    localStorage.setItem("user", userName);
+                    localStorage.setItem("BBOS174836728", password);
+                    console.log("set storage: " + BBOSUsername + " " + BBSFOSS);
+                }else{
+                    alert("You chave to have a username and password!");
+                }
+                location.reload();
+            }
+        }
+        function login(){
+            console.log("u,p=" + BBOSUsername + " " + BBSFOSS);
+            console.log("key " + key);
+            if (key == "load0"){
+                document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, cyan, lime);; text-shadow: #0f0 1px 0 10px;} input{color: white; background-color: #333; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;} button {color: white; background-color: #333; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;}</style>");
+                document.write("<p>BetterBrowseOS presented and produced by-</p>")
+                document.write("<h1>                              BetterBrowse~<h1>");
+                setTimeout(() => {
+                    localStorage.setItem("key", "load1");
+                    location.reload();
+                }, 2500);
+            }else{
+                if (key == "load1"){
+                    document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, yellow, red);; text-shadow: #0f0 1px 0 10px;} input{color: white; background-color: #333; border-radius: 6px; padding: 10px; box-shadow: text-shadow: #0f0 1px 0 10px;} button {color: white; background-color: #333; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;}</style>");
+                    document.write("<p>BetterBrowse~ partnered with-</p>");
+                    document.write("<h1>                       SchoolFlix</h1>");
+                    setTimeout(() => {
+                        localStorage.setItem("key", "load2");
+                        location.reload();
+                    }, 2500);
+                }else{
+                    if (key == "load2"){
+                        console.log("Logged in succesfuly")
+                        document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, purple, cyan);; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;} input {background-color: white; border-radius: 6px; box-shadow: #0f0 1px 0 10px; padding: 10px; color: black;} button {background-color: white; border-radius: 6px; box-shadow: #0f0 1px 0 10px; color: black; padding: 10px;}</style>")
+                        document.write("<h1></h1>");
+                        let p4 = document.createElement("input");
+                        p4.type = 'Text';
+                        p4.id = 'log';
+                        p4.placeholder = 'Password here: ';
+                        document.body.appendChild(p4);
+                        document.write("<h1></h1>");
+                        var b2 = document.createElement('button');
+                        b2.innerHTML = 'Login!';
+                        b2.onclick = function() {
+                            const userLoginAttempt = document.getElementById("log").value;
+                            console.log("User input: " + userLoginAttempt);
+                            if (userLoginAttempt == BBSFOSS){
+                                console.log("booting in!")
+                                localStorage.setItem("key", "load3");
+                                location.reload();
+                            }else{
+                                console.log("incorrect password!");
+                            }
+                        };
+                        document.body.appendChild(b2);
+                    }else if(key == "load3"){
+                        localStorage.setItem("key", "load0");
+                        bootIn();
+                    }else{
+                        localStorage.setItem("key", "load0");
+                        location.reload()
+                    }
+                }
+            }
+        }
+        function bootIn(){
+            console.log("Welcome " + BBOSUsername);
+            loggedin+=1;
+        }
+        function w1(){
+            if (loggedin == 1){
+                let w2s = window.open("", "myWindow", "width=400,height=400");
+            }
+        }
+        function w2(){
+            let w2s = window.open("", "myWindow", "width=600,height=600");
+            w2s.document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, #444, #333);; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;} input {background-color: white; border-radius: 6px; box-shadow: #0f0 1px 0 10px; padding: 10px; color: black;} button {background-color: white; border-radius: 6px; box-shadow: #0f0 1px 0 10px; color: black; padding: 10px;} textarea{background-color: #222; color: white; border-radius: 6px;}</style>");
+            w2s.document.write("<h1>BetterBrowseOS terminal~</h1>");
+            let textarea = w2s.document.createElement('textarea');
+            textarea.rows = 30;
+            textarea.cols = 30;
+            textarea.id = 'command';
+            textarea.placeholder = 'type help for commands';
+            w2s.document.body.appendChild(textarea);
+            w2s.document.getElementById('command').addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    let getCommand = w2s.document.getElementById("command").value;
+                    if (getCommand == "help" || getCommand == "Help"){
+                        w2s.document.write("<h1>commands-</h1>");
+                        w2s.document.write("<h1>1.) tell{whatever you want to sya to the computer}</h1>");
+                        w2s.document.write("<h1>2.) iframe{url} will run a website in a iframe</h1>");
+                        w2s.document.write("<h1>3.) script{js in here} will execute js</h1>");
+                        w2s.document.write("<h1>4.) redirect{url} will redirect you to a website</h1>");
+                        w2s.document.write("<h1>5.) userIp{} will get your ip</h1>");
+                        w2s.document.write("<h1>6.) coords{} will get your coordinates");
+                        w2s.document.write("<h1>7.) fetchAdmin{url} will try to get admin versions of websites</h1>");
+                    }else{
+                        let commandBeingExecuted = 0;
+                        let keepCountStarted = 0;
+                        let commandVar = 0;
+                        let tempStorageForUserCommandVar = [];
+                        for (let i = 0; i <= getCommand.length;){
+                            let commandLine = getCommand[i];
+                            if (commandBeingExecuted == 0){
+                                if (commandLine == "t" || commandLine == "T"){
+                                    commandBeingExecuted++;
+                                }
+                                if (commandLine == "i" || commandLine == "I"){
+                                    commandBeingExecuted+=2;
+                                }
+                                if (commandLine == "s" || commandLine == "S"){
+                                    commandBeingExecuted+=3;
+                                }
+                                if (commandLine == "r" || commandLine == "R"){
+                                    commandBeingExecuted+=4;
+                                }
+                                if (commandLine == "u" || commandLine == "U"){
+                                    commandBeingExecuted+=5;
+                                }
+                                if (commandLine == "c" || commandLine == "C"){
+                                    commandBeingExecuted+=6;
+                                }
+                                if (commandLine == "f" || commandLine == "F"){
+                                    commandBeingExecuted+=7;
+                                }
+                            }else if(commandVar == 0){
+                                if (commandLine == "{" && keepCountStarted == 0){
+                                    keepCountStarted++;
+                                }
+                                if (commandLine != "}" && keepCountStarted == 1 && commandLine != "{"){
+                                    tempStorageForUserCommandVar.push(commandLine);
+                                }else if (keepCountStarted == 1 && commandLine != "{"){
+                                    commandVar++;
+                                }
+                            }else{
+                                if (commandBeingExecuted == 1){
+                                    w2s.alert(tempStorageForUserCommandVar.join(""));
+                                }
+                                if (commandBeingExecuted == 2){
+                                    w2s.document.write("<iframe src='"+tempStorageForUserCommandVar.join("")+"' width='100%' height='100%'></iframe>");
+                                }
+                                if (commandBeingExecuted == 3){
+                                    w2s.eval(tempStorageForUserCommandVar.join(""));
+                                }
+                                if (commandBeingExecuted == 4){
+                                    w2s.window.open(tempStorageForUserCommandVar.join(""), "_blank")
+                                }
+                                if (commandBeingExecuted == 5){
+                                    console.log("get ip")
+                                    async function getIP() {
+                                        try {
+                                            const response = await fetch('https://api.ipify.org?format=json');
+                                            const data = await response.json();
+                                            w2s.alert(`Your IP Address: ${data.ip}`);
+                                        } catch (error) {
+                                            console.error('Error fetching IP address:', error);
+                                            w2s.alert("error getting your ip");
+                                        }
+                                    }
+                                    //credit for the getIP() code- medium.com/@ryan_forrester_ artical name- Get IP Address in JavaScript (How to Guide) by- ryan link-https://medium.com/@ryan_forrester_/get-ip-address-in-javascript-how-to-guide-13c91383b33f#:~:text=js%20with%20Express%2C%20you%20can,remoteAddress%20.
+                                    getIP();
+                                }
+                                if (commandBeingExecuted == 6){
+                                    if (navigator.geolocation){
+                                        navigator.geolocation.getCurrentPosition(showPosition, handleError);
+                                    }else{
+                                        w2s.alert("Geolocation is not supported by your browser.");
+                                    }
+                                    function showPosition(position){
+                                        w2s.alert(position.coords.latitude + ", " + position.coords.longitude);
+                                    }
+                                    function handleError(error){
+                                        switch(error.code){
+                                            case error.PERMISSION_DENIED:
+                                            w2s.alert("User denied the request for Geolocation.");
+                                            break;
+                                            case error.POSITION_UNAVAILABLE:
+                                            w2s.alert("Location information is unavailable.");
+                                            break;
+                                            case error.TIMEOUT:
+                                            w2s.alert("The request to get user location timed out.");
+                                            break;
+                                            case error.UNKNOWN_ERROR:
+                                            w2s.alert("An unknown error occurred.");
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (commandBeingExecuted == 7){
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:admin", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:register", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:login", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:employee", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:boss", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:manager", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:info", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:html", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:php", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:database", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:stocks", "_blank");
+                                    window.open("https://www.google.com/search?q=" + tempStorageForUserCommandVar.join("") + "inurl:docs", "_blank");
+                                }
+                                tempStorageForUserCommandVar.splice(0);
+                                commandVar--;
+                                while (commandBeingExecuted != 0){
+                                    commandBeingExecuted--;
+                                }
+                                keepCountStarted--;
+                            }
+                            i++;
+                        }
+                    }
+                }
+            });
+        }
+        function w3(){
+            let w3s = window.open("", "myWindow", "width=600,height=600");
+            w3s.document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, #444, #333);; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;} input {background-color: white; border-radius: 6px; box-shadow: #0f0 1px 0 10px; padding: 10px; color: black;} button {background-color: #333; border-radius: 6px; color: white; padding: 10px;} textarea{background-color: #222; color: white; border-radius: 6px;}</style>");
+            w3s.document.write("<h1>Code Editor</h1>");
+            let textareaHTML = w3s.document.createElement('textarea');
+            textareaHTML.rows = 20;
+            textareaHTML.cols = 20;
+            textareaHTML.id = 'html';
+            textareaHTML.placeholder = 'type html in here';
+            w3s.document.body.appendChild(textareaHTML);
+            let textareaCSS = w3s.document.createElement('textarea');
+            textareaCSS.rows = 20;
+            textareaCSS.cols = 20;
+            textareaCSS.id = 'css';
+            textareaCSS.placeholder = 'type css in here';
+            w3s.document.body.appendChild(textareaCSS);
+            let textareaJS = w3s.document.createElement('textarea');
+            textareaJS.rows = 20;
+            textareaJS.cols = 20;
+            textareaJS.id = 'js';
+            textareaJS.placeholder = 'type js in here';
+            w3s.document.body.appendChild(textareaJS);
+            w3s.document.write("<iframe id="+'iframeRun'+" width=100% height=100%></iframe>");
+            let run = w3s.document.createElement('button');
+            run.innerHTML = 'run code';
+            run.onclick = function(){
+                let iframe = w3s.document.getElementById("iframeRun");
+                let html = w3s.document.getElementById("html").value;
+                let css = w3s.document.getElementById("css").value;
+                let js = w3s.document.getElementById("js").value;
+                iframe.contentWindow.document.open();
+                iframe.contentWindow.document.write(` <style>${css}</style> ${html} <script>${js}<\/script> `);
+                iframe.contentWindow.document.close();
+            }
+            w3s.document.body.appendChild(run);
+        }
+        function w4(){
+            let w4s = window.open("", "myWindow", "width=600,height=600");
+            w4s.document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, purple, violet);; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;} input {background-color: white; border-radius: 6px; box-shadow: #0f0 1px 0 10px; padding: 10px; color: black;} button {background-color: white; border-radius: 6px; box-shadow: #0f0 1px 0 10px; color: black; padding: 10px;}</style>");
+            w4s.document.write("<h1>BetterBrowse~ (iframe beta)</h1>");    
+            w4s.document.write("<p>It is important to note that not every website will run in Iframe search, but most will(scroll down for more information about iframe search)</p>")        
+            let userProxyInput = w4s.document.createElement('input');
+            userProxyInput.type = 'Text';
+            userProxyInput.id = 'up';
+            userProxyInput.placeholder = 'website link(https/http): ';
+            w4s.document.body.appendChild(userProxyInput);
+            let search = w4s.document.createElement('button');
+            search.innerHTML = 'iframe search';
+            search.onclick = function(){
+                let what = w4s.document.getElementById("up").value;
+                console.log(what)
+                w4s.document.write("<iframe src='"+what+"' width=100% height=100%></iframe>");
+            }
+            let searchNorm = w4s.document.createElement('button');
+            searchNorm.innerHTML = 'serach';
+            searchNorm.onclick = function(){
+                let what1 = w4s.document.getElementById("up").value;
+                console.log(what1);
+                window.open("https://www.google.com/search?q="+what1, "_blank");
+            }
+            w4s.document.body.appendChild(searchNorm);
+            w4s.document.body.appendChild(search);
+            w4s.document.write("<h1></h1>");
+            let about = w4s.document.createElement('button');
+            about.innerHTML = 'about iframe search';
+            about.onclick = function(){
+                w4s.document.write("<h1>About Iframe search~</h1>");
+                w4s.document.write("<h1>-Iframe search runs the website you searched up in a iframe</h1>");
+                w4s.document.write("<h1>-If you don't know what a iframe is, it is a html property that Allows you to execute code or run websites without interfering with your browser, or your browser interfering with it, and what this can do is run websites without security extentions or apps intercepting the website!</h1>");
+                w4s.document.write("<h1>-downsides to using this is that not all websites will work, but we have a normal search option that redirects you to that website you want to go to!</h1>");
+            }
+            w4s.document.body.appendChild(about);
+        }
+        function w5(){
+            let w5s = window.open("", "myWindow", "width=600px,height=600px");
+            w5s.document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, lime, violet);; text-shadow: #0f0 1px 0 10px;} input{color: white; background-color: #333; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;} button {color: white; background-color: #333; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;}</style>");
+            w5s.document.write("<h1>Blackbox.ai~</h1>")
+            w5s.document.write("<iframe src='https://www.blackbox.ai/chat/1QKXsot' width=100% height=100%></iframe>");
+        }
+        function w6(){
+            let w6s = window.open("", "myWindow", "width=600,height=600");
+            w6s.document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, cyan, lime); border-radius: 6px; padding: 10px;} input {background-color: white; border-radius: 6px; padding: 10px; color: black;} button {background-color: white; border-radius: 6px; color: black; padding: 10px;}</style>");
+            w6s.document.write("<h1>Schoolflix & BetterBrowse~</h1>");
+            w6s.document.write("<h1>Games</h1>");
+            w6s.document.write("<h1></h1>");
+            var gb1 = w6s.document.createElement('button');
+            gb1.innerHTML = 'ev.io (fps shooter)';
+            gb1.onclick = function() {
+                w6s.document.write("<iframe src='https://ev.io/' width=100% height=100%></iframe>");
+            };
+            w6s.document.body.appendChild(gb1);
+            var gb2 = w6s.document.createElement('button');
+            gb2.innerHTML = '1v1';
+            gb2.onclick = function() {
+                w6s.document.write("<iframe src='https://1v1.lol' width=100% height=100%></iframe>");
+            };
+            w6s.document.body.appendChild(gb2);
+            var gb3 = w6s.document.createElement('button');
+            gb3.innerHTML = 'moto xm';
+            gb3.onclick = function() {
+                w6s.document.write("<iframe src='https://webglmath.github.io/moto-x3m/' width=100% height=100%></iframe>");
+            };
+            w6s.document.body.appendChild(gb3);
+            var gb4 = w6s.document.createElement('button');
+            gb4.innerHTML = 'slope';
+            gb4.onclick = function() {
+                w6s.document.write("<iframe src='https://slope3d.net/game/slope/' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb4);
+            var gb5 = w6s.document.createElement('button');
+            gb5.innerHTML = '2048';
+            gb5.onclick = function() {
+                w6s.document.write("<iframe src='https://2048game.com/' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb5);
+           var gb6 = w6s.document.createElement('button');
+            gb6.innerHTML = 'dino game';
+            gb6.onclick = function() {
+                w6s.document.write("<iframe src='https://dinosaur-game.io/' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb6);
+           var gb7 = w6s.document.createElement('button');
+            gb7.innerHTML = 'flappy bird';
+            gb7.onclick = function() {
+                w6s.document.write("<iframe src='https://flappybird.ee/game' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb7);
+           var gb8 = w6s.document.createElement('button');
+            gb8.innerHTML = 'mario';
+            gb8.onclick = function() {
+                w6s.document.write("<iframe src='https://gamaverse.com/c/f/g/super-mario-bros/' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb8);
+           var gb9 = w6s.document.createElement('button');
+            gb9.innerHTML = 'pvz';
+            gb9.onclick = function() {
+                w6s.document.write("<iframe src='https://www.miniplay.com/embed/plants-vs-zombies' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb9);
+           var gb10 = w6s.document.createElement('button');
+            gb10.innerHTML = 'agar.io';
+            gb10.onclick = function() {
+                w6s.document.write("<iframe src='https://agargame.io/agar-io.embed' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb10);
+           var gb11 = w6s.document.createElement('button');
+            gb11.innerHTML = 'google snake';
+            gb11.onclick = function() {
+                w6s.document.write("<iframe src='https://googlesnakemods.com/v/5/' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb11);
+           var gb12 = w6s.document.createElement('button');
+            gb12.innerHTML = 'snake.io';
+            gb12.onclick = function() {
+                w6s.document.write("<iframe src='https://gulper.io/' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb12);
+           var gb13 = w6s.document.createElement('button');
+            gb13.innerHTML = 'donkey kong';
+            gb13.onclick = function() {
+                w6s.document.write("<iframe src='https://retrobowl.me/iframe/donkey-kong/index.php' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb13);
+           var gb14 = w6s.document.createElement('button');
+            gb14.innerHTML = 'pacman';
+            gb14.onclick = function() {
+                w6s.document.write("<iframe src='https://pacman.cc/game/' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb14);
+           var gb15 = w6s.document.createElement('button');
+            gb15.innerHTML = 'retro bowl';
+            gb15.onclick = function() {
+                w6s.document.write("<iframe src='https://retrobowl25.com/retro-bowl.embed' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb15);
+           var gb16 = w6s.document.createElement('button');
+            gb16.innerHTML = 'minecraft';
+            gb16.onclick = function() {
+                w6s.document.write("<iframe src='https://eaglercraftx.pages.dev' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb16);
+           var gb17 = w6s.document.createElement('button');
+            gb17.innerHTML = 'doodle jump';
+            gb17.onclick = function() {
+                w6s.document.write("<iframe src='https://doodlejump.io/play/' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb17);
+           var gb18 = w6s.document.createElement('button');
+            gb18.innerHTML = 'block blast';
+            gb18.onclick = function() {
+                w6s.document.write("<iframe src='https://block-blast.io/block-blast.embed' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb18);
+           var gb19 = w6s.document.createElement('button');
+            gb19.innerHTML = 'geometry dash';
+            gb19.onclick = function() {
+                w6s.document.write("<iframe src='https://geometrydashlitepc.io/geometry-dash-lite.embed' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb19);
+           var gb20 = w6s.document.createElement('button');
+            gb20.innerHTML = 'cut the rope';
+            gb20.onclick = function() {
+                w6s.document.write("<iframe src='https://famobi.cdn.start.gg/9npxcz4n8jw7/v4/index.html?msstart_sdk_init=eyJwYXJlbnRPcmlnaW4iOiJodHRwczovL3d3dy5tc24uY29tIiwiY2xpZW50SWQiOiIwNzI2RjlBOTQ3REE2RDNDMzQwN0VDOTQ0NjVDNkNGQiIsImxvY2FsZSI6ImVuLXVzIiwiZW50cnlQb2ludElkIjoiIn0' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb20);
+           var gb21 = w6s.document.createElement('button');
+            gb21.innerHTML = 'cod zombies';
+            gb21.onclick = function() {
+                w6s.document.write("<iframe src='https://kdata1.com/2024/10/call-of-duty-zombies-demake/' width=100% height=100%></iframe>");
+           };
+           w6s.document.body.appendChild(gb21);
+        }
+        function w7(){
+            let w7s = window.open("", "myWindow", "width=600,height=600");
+            w7s.document.write("<style>body {text-align: center; color: white;background: linear-gradient(to right, orange, yellow);; text-shadow: #0f0 1px 0 10px;} input{color: white; background-color: #333; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;} button {color: white; background-color: #333; border-radius: 6px; padding: 10px; box-shadow: #0f0 1px 0 10px;}</style>");
+            w7s.document.write("<h1>Developers-</h1>");
+            w7s.document.write("<h1>BetterBrowse~</h1>");
+            w7s.document.write("<h1>partners and credits-</h1>");
+            w7s.document.write("<h1>Schoolflix</h1>");
+            w7s.document.write("<h1>blackbox.ai</h1>");
+            w7s.document.write("<h1>ev.io</h1>");
+            w7s.document.write("<h1>lvl.lol</h1>");
+            w7s.document.write("<h1>dino offline game, google snake-google</h1>");
+            w7s.document.write("<h1>flappy bird</h1>");
+            w7s.document.write("<h1>mario (remake), donkey kong(remake), -nintendo</h1>");
+            w7s.document.write("<h1>block blast</h1>");
+            w7s.document.write("<h1>pacman</h1>");
+            w7s.document.write("<h1>geometry dash(remake)</h1>");
+            w7s.document.write("<h1>doodle jump</h1>");
+            w7s.document.write("<h1>retro bowl</h1>");
+            w7s.document.write("<h1>plants vs zombies(remake)-popcap/EA</h1>");
+            w7s.document.write("<h1>moto xm</h1>");
+            w7s.document.write("<h1>2048</h1>");
+            w7s.document.write("<h1>agar.io</h1>");
+            w7s.document.write("<h1>gulper.io</h1>");
+            w7s.document.write("<h1>egalercraft and Mojane</h1>");
+            w7s.document.write("<h1>Cut The Rope</h1>");
+            w7s.document.write("<h1>call of duty zombies(remake)-Activision</h1>")
+        }
+        boot();
+    </script>
+</body>
+</html>
