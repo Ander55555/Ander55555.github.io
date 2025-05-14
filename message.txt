@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>labyrinth-games</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    body {
+      background: url('https://labyrinth-games.neocities.org/IMG_0625.jpeg') no-repeat center center/cover;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-transform: uppercase;
+      text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8);
+      animation: glow 1.5s infinite alternate;
+      margin-bottom: 20px;
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8); }
+      100% { text-shadow: 0px 0px 20px rgba(255, 255, 255, 1); }
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    .button-85 {
+      padding: 0.6em 2em;
+      border: none;
+      outline: none;
+      color: white;
+      background: #111;
+      cursor: pointer;
+      position: relative;
+      z-index: 0;
+      border-radius: 10px;
+      user-select: none;
+      margin: 10px;
+    }
+
+    .button-85:before {
+      content: "";
+      background: linear-gradient(45deg,#ff0000,#ff7300,#fffb00,#48ff00,#00ffd5,#002bff,#7a00ff,#ff00c8,#ff0000);
+      position: absolute;
+      top: -2px; left: -2px;
+      background-size: 400%;
+      z-index: -1;
+      filter: blur(5px);
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      animation: glowing-button-85 20s linear infinite;
+      border-radius: 10px;
+    }
+
+    .button-85:after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #222;
+      left: 0;
+      top: 0;
+      border-radius: 10px;
+      z-index: -1;
+    }
+
+    #embedBox {
+      background: rgba(0,0,0,0.8);
+      width: 90%;
+      height: 70vh;
+      overflow-y: auto;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    #backButton, #embedTools {
+      margin-top: 10px;
+      display: none;
+    }
+
+    #embedTools {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #ubgu-img {
+      height: 150px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform 0.2s ease;
+    }
+
+    #ubgu-img:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1 id="welcomeText">Welcome to labyrinth-games</h1>
+
+  <img id="ubgu-img" src="https://ubgameunion.neocities.org/UBGU%20Member.svg" alt="UBGU Member" onclick="loadEmbed('https://ubgameunion.neocities.org/')">
+
+  <div class="buttons" id="mainMenu">
+    <button class="button-85" onclick="loadEmbed('play.html')">Games/Proxys</button>
+    <button class="button-85" onclick="loadEmbed('about.html')">About</button>
+    <button class="button-85" onclick="loadEmbed('contact.html')">Contact</button>
+    <button class="button-85" onclick="loadEmbed('chat.html')">Chat</button>
+  </div>
+
+  <div id="embedBox"></div>
+
+  <div id="embedTools">
+    <button class="button-85" onclick="openInAboutBlank()">Open in about:blank</button>
+    <button class="button-85" onclick="openInBlob()">Open in blob</button>
+  </div>
+
+  <button id="backButton" class="button-85" onclick="goBack()">Back</button>
+
+  <script>
+    let currentUrl = '';
+
+    function loadEmbed(url) {
+      currentUrl = url;
+
+      fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('embedBox').innerHTML = html;
+          document.getElementById('embedBox').style.display = 'block';
+          document.getElementById('mainMenu').style.display = 'none';
+          document.getElementById('ubgu-img').style.display = 'none';
+          document.getElementById('welcomeText').style.display = 'none';
+          document.getElementById('backButton').style.display = 'inline-block';
+          document.getElementById('embedTools').style.display = 'flex';
+        })
+        .catch(err => {
+          document.getElementById('embedBox').innerHTML = `<p>Failed to load content.</p>`;
+        });
+    }
+
+    function goBack() {
+      document.getElementById('embedBox').style.display = 'none';
+      document.getElementById('embedBox').innerHTML = '';
+      document.getElementById('mainMenu').style.display = 'block';
+      document.getElementById('ubgu-img').style.display = 'inline-block';
+      document.getElementById('welcomeText').style.display = 'block';
+      document.getElementById('backButton').style.display = 'none';
+      document.getElementById('embedTools').style.display = 'none';
+    }
+
+    function openInAboutBlank() {
+      fetch(currentUrl)
+        .then(res => res.text())
+        .then(html => {
+          const newWin = window.open('about:blank');
+          newWin.document.write(html);
+          newWin.document.close();
+        });
+    }
+
+    function openInBlob() {
+      fetch(currentUrl)
+        .then(res => res.text())
+        .then(html => {
+          const blob = new Blob([html], { type: 'text/html' });
+          const url = URL.createObjectURL(blob);
+          window.open(url, '_blank');
+        });
+    }
+  </script>
+</body>
+</html>
