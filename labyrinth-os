@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labyrinth Hacker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #0f0;
+            --bg: #050505;
+            /* Prism-style Glass colors */
+            --glass: rgba(20, 20, 20, 0.85);
+            --glass-border: rgba(0, 255, 0, 0.3);
+        }
+
+        * { font-family: 'Share Tech Mono', monospace; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at center, #001100 0%, #050505 100%);
+            margin: 0; overflow: hidden; color: var(--green); height: 100vh;
+        }
+
+        /* Desktop Icons */
+        #desktop { padding: 30px; display: grid; grid-template-columns: repeat(auto-fill, 110px); gap: 20px; }
+        .icon { 
+            display: flex; flex-direction: column; align-items: center; 
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .icon:hover { transform: scale(1.1); }
+        .icon img { 
+            width: 52px; height: 52px; 
+            filter: drop-shadow(0 0 5px var(--green));
+            margin-bottom: 8px;
+        }
+        .icon span { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Prism Style Window */
+        #win {
+            position: absolute; top: 100px; left: 100px; width: 850px; height: 550px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            display: none; flex-direction: column; z-index: 100;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .header { 
+            padding: 12px 20px; display: flex; justify-content: space-between; 
+            cursor: move; background: rgba(0, 255, 0, 0.05);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .controls { display: flex; gap: 10px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--green); cursor: pointer; }
+        .dot:hover { background: var(--green); }
+
+        /* Media Players Layout */
+        #frame-area { width: 100%; height: 100%; flex-grow: 1; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* YouTube Search Bar (Prism Style) */
+        #yt-bar { 
+            padding: 15px; display: none; gap: 10px; 
+            background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--glass-border);
+        }
+        #yt-input { 
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); 
+            color: #fff; flex-grow: 1; padding: 8px 15px; border-radius: 20px; outline: none;
+        }
+        
+        /* Injector Styles */
+        #editor-area { padding: 20px; display: none; flex-direction: column; height: 100%; }
+        textarea { 
+            flex-grow: 1; background: transparent; color: var(--green); 
+            border: 1px solid var(--glass-border); border-radius: 8px;
+            padding: 15px; outline: none; resize: none;
+        }
+
+        .btn { 
+            background: var(--green); color: #000; border: none; 
+            padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: bold;
+            margin-top: 10px; align-self: flex-end;
+        }
+
+        /* Taskbar */
+        #bar { 
+            position: absolute; bottom: 0; width: 100%; height: 45px; 
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            border-top: 1px solid var(--glass-border); 
+            display: flex; align-items: center; padding: 0 20px; 
+        }
+        #time { margin-left: auto; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div id="desktop">
+    <div class="icon" onclick="openApp('net', 'https://www.google.com/webhp?igu=1')">
+        <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png"><span>Google</span>
+    </div>
+    <div class="icon" onclick="openApp('yt')">
+        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png"><span>YouTube</span>
+    </div>
+    <div class="icon" onclick="openApp('sc')">
+        <img src="https://ander55555.github.io/Labyrinth.png"><span>Labyrinth gn</span>
+    </div>
+    <div class="icon" onclick="openApp('net', 'https://pizzaedition.win/')">
+        <img src="https://cdn-icons-png.flaticon.com/512/686/686589.png"><span>Games</span>
+    </div>
+    <div class="icon" onclick="openApp('edit')">
+        <img src="https://cdn-icons-png.flaticon.com/512/1157/1157109.png"><span>Injector</span>
+    </div>
+</div>
+
+<div id="win">
+    <div class="header" id="handle">
+        <span id="title" style="font-size: 12px; opacity: 0.7;">SYSTEM_TERMINAL</span>
+        <div class="controls">
+            <div class="dot" style="border-color: #ffbd2e;" onclick="maximize()"></div>
+            <div class="dot" style="border-color: #ff5f56;" onclick="closeWin()"></div>
+        </div>
+    </div>
+    
+    <div id="yt-bar">
+        <input type="text" id="yt-input" placeholder="Paste YouTube URL...">
+        <button class="btn" style="margin:0" onclick="loadYT()">LOAD</button>
+    </div>
+
+    <div id="frame-area"><iframe id="main-iframe" src=""></iframe></div>
+
+    <div id="editor-area">
+        <textarea id="code-input" placeholder="// Input script..."></textarea>
+        <button class="btn" onclick="runCode()">EXECUTE</button>
+    </div>
+</div>
+
+<div id="bar">
+    <div style="font-weight: bold; letter-spacing: 2px; color: var(--green);">Labyrinth_OS</div>
+    <div id="time">00:00:00</div>
+</div>
+
+<script>
+    const win = document.getElementById('win');
+    const iframe = document.getElementById('main-iframe');
+    const title = document.getElementById('title');
+    const ytBar = document.getElementById('yt-bar');
+    const frameArea = document.getElementById('frame-area');
+    const editorArea = document.getElementById('editor-area');
+
+    function openApp(mode, url = "") {
+        win.style.display = "flex";
+        ytBar.style.display = "none";
+        frameArea.style.display = "none";
+        editorArea.style.display = "none";
+        iframe.src = "";
+
+        if(mode === 'net') {
+            title.innerText = "EXPLORER";
+            frameArea.style.display = "block";
+            iframe.src = url;
+        } else if (mode === 'yt') {
+            title.innerText = "YOUTUBE_PLAYER";
+            ytBar.style.display = "flex";
+            frameArea.style.display = "block";
+            iframe.src = "https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=0&modestbranding=1";
+        } else if (mode === 'sc') {
+            title.innerText = "SOUND_CLOUD";
+            frameArea.style.display = "block";
+            // Prism-style SoundCloud embed (Visualizer look)
+            iframe.src = "/gn.html";
+        } else if (mode === 'edit') {
+            title.innerText = "INJECTOR_V2";
+            editorArea.style.display = "flex";
+        }
+    }
+
+    function loadYT() {
+        let url = document.getElementById('yt-input').value;
+        let id = "";
+        if(url.includes("v=")) id = url.split("v=")[1].split("&")[0];
+        else if(url.includes("youtu.be/")) id = url.split("youtu.be/")[1];
+        if(id) iframe.src = "https://www.youtube.com/embed/" + id + "?autoplay=1";
+    }
+
+    function runCode() {
+        try { eval(document.getElementById('code-input').value); }
+        catch(e) { alert("ERROR: " + e.message); }
+    }
+
+    function closeWin() { win.style.display = "none"; iframe.src = ""; }
+
+    let isMax = false;
+    let oldPos = {};
+    function maximize() {
+        if(!isMax) {
+            oldPos = { t: win.style.top, l: win.style.left, w: win.style.width, h: win.style.height };
+            win.style.top = "0"; win.style.left = "0"; win.style.width = "100%"; win.style.height = "calc(100vh - 45px)";
+            win.style.borderRadius = "0";
+        } else {
+            win.style.top = oldPos.t; win.style.left = oldPos.l; win.style.width = oldPos.w; win.style.height = oldPos.h;
+            win.style.borderRadius = "12px";
+        }
+        isMax = !isMax;
+    }
+
+    let dragging = false, offset = { x: 0, y: 0 };
+    document.getElementById('handle').onmousedown = (e) => {
+        if(isMax) return;
+        dragging = true;
+        offset.x = e.clientX - win.offsetLeft;
+        offset.y = e.clientY - win.offsetTop;
+    };
+    document.onmousemove = (e) => {
+        if (!dragging) return;
+        win.style.left = (e.clientX - offset.x) + "px";
+        win.style.top = (e.clientY - offset.y) + "px";
+    };
+    document.onmouseup = () => dragging = false;
+
+    setInterval(() => { document.getElementById('time').innerText = new Date().toLocaleTimeString('en-GB'); }, 1000);
+</script>
+</body>
+</html>
