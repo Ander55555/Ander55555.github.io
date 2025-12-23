@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROOT_ACCESS_GRANTED</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* System Override */
+        :root {
+            --neon-green: #00ff41;
+            --dark-green: #0d260d;
+            --black-bg: #050505;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--black-bg);
+            color: var(--neon-green);
+            overflow: hidden;
+        }
+
+        /* --- CRT & Scanline Effects --- */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 255, 65, 0.02);
+            z-index: 11;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+
+        /* --- Matrix Canvas --- */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        /* --- Terminal Card --- */
+        .terminal-card {
+            background: rgba(0, 10, 0, 0.85);
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2), inset 0 0 40px rgba(0, 255, 65, 0.1);
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        /* Corner decorations */
+        .corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--neon-green);
+            transition: all 0.3s ease;
+        }
+        .tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        /* --- Glitch Text --- */
+        .glitch-text {
+            position: relative;
+            color: var(--neon-green);
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--black-bg);
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(38px, 9999px, 81px, 0); }
+            20% { clip: rect(6px, 9999px, 9px, 0); }
+            40% { clip: rect(68px, 9999px, 34px, 0); }
+            60% { clip: rect(51px, 9999px, 15px, 0); }
+            80% { clip: rect(9px, 9999px, 93px, 0); }
+            100% { clip: rect(45px, 9999px, 60px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(58px, 9999px, 91px, 0); }
+            20% { clip: rect(16px, 9999px, 29px, 0); }
+            40% { clip: rect(28px, 9999px, 84px, 0); }
+            60% { clip: rect(11px, 9999px, 5px, 0); }
+            80% { clip: rect(39px, 9999px, 23px, 0); }
+            100% { clip: rect(25px, 9999px, 40px, 0); }
+        }
+
+        /* --- Hacker Buttons --- */
+        .btn-hack-primary {
+            background: var(--neon-green);
+            color: #000;
+            border: 1px solid var(--neon-green);
+            position: relative;
+            z-index: 1;
+            transition: all 0.2s;
+        }
+        
+        .btn-hack-primary:hover {
+            box-shadow: 0 0 15px var(--neon-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-hack-secondary {
+            background: transparent;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .btn-hack-secondary:hover {
+            background: rgba(0, 255, 65, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        /* Typewriter Cursor */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            background-color: var(--neon-green);
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Toast Hack */
+        .toast-hack {
+            background: #000;
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center relative">
+
+    <!-- FX Layers -->
+    <div class="scanlines"></div>
+    <div class="crt-flicker"></div>
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Main Interface -->
+    <div class="relative z-20 w-full max-w-2xl mx-4">
+        <div class="terminal-card p-8 md:p-12">
+            <!-- Decorative Corners -->
+            <div class="corner tl"></div>
+            <div class="corner tr"></div>
+            <div class="corner bl"></div>
+            <div class="corner br"></div>
+
+            <!-- Header Bar -->
+            <div class="flex justify-between items-center mb-8 border-b border-green-900/50 pb-4">
+                <div class="text-xs tracking-widest flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    STATUS: CONNECTED
+                </div>
+                <div class="text-xs opacity-50">UID: 0x49310</div>
+            </div>
+
+            <!-- Main Content -->
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tighter" style="text-shadow: 0 0 10px rgba(0,255,65,0.5);">
+                SYSTEM <br/>
+                <span class="glitch-text text-5xl md:text-7xl block mt-2" data-text="OVERRIDE">OVERRIDE</span>
+            </h1>
+            
+            <p class="text-green-400/80 mb-10 text-lg leading-relaxed max-w-lg font-light">
+                <span id="typewriter"></span><span class="cursor">&nbsp;</span>
+            </p>
+
+            <!-- Command Inputs (Buttons) -->
+            <div class="flex flex-col sm:flex-row gap-5 mt-8">
+                <button id="btnPrimary" class="btn-hack-primary px-8 py-4 font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-3 group">
+                    <span>gn</span>
+                </button>
+
+                <button id="btnSecondary" class="btn-hack-secondary px-8 py-4 font-bold text-sm tracking-widest uppercase">
+                    void
+                </button>
+            </div>
+            
+            <!-- Bottom Stats -->
+            <div class="mt-10 flex gap-4 text-[10px] text-green-700 font-mono uppercase">
+                <div>MEM: 64TB</div>
+                <div>//</div>
+                <div>CPU: 128 CORE</div>
+                <div>//</div>
+                <div>NET: ENCRYPTED</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="toastContainer" class="fixed bottom-10 left-0 right-0 flex flex-col items-center pointer-events-none z-50 gap-3"></div>
+
+    <script>
+        // --- Typewriter Effect ---
+        const textToType = "Access restricted. Decryption key required for entry. Protocol 7 initiated...";
+        const typeWriterElement = document.getElementById('typewriter');
+        let i = 0;
+
+        function typeWriter() {
+            if (i < textToType.length) {
+                typeWriterElement.innerHTML += textToType.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50); // Speed of typing
+            }
+        }
+        // Start typing after a short delay
+        setTimeout(typeWriter, 1000);
+
+        // --- Matrix Rain Animation ---
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width/fontSize;
+        const drops = [];
+
+        for(let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; // Fade effect
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; // Green text
+            ctx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+
+                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
+                    drops[i] = 0;
+
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 30);
+
+
+        // --- Interaction Logic ---
+        const btnPrimary = document.getElementById('btnPrimary');
+        const btnSecondary = document.getElementById('btnSecondary');
+        const toastContainer = document.getElementById('toastContainer');
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            
+            toast.className = `toast-hack pointer-events-auto flex items-center gap-4 px-6 py-3 border shadow-2xl min-w-[300px] toast-enter`;
+            
+            toast.innerHTML = `
+                <div class="font-bold text-xl">></div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-xs uppercase tracking-widest opacity-80">System Message</span>
+                    <span class="text-sm font-mono">${message}</span>
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Simple entrance anim via CSS class
+            toast.style.transform = 'translateY(20px)';
+            toast.style.opacity = '0';
+            toast.style.transition = 'all 0.3s ease';
+            
+            requestAnimationFrame(() => {
+                toast.style.transform = 'translateY(0)';
+                toast.style.opacity = '1';
+            });
+
+            setTimeout(() => {
+                toast.style.transform = 'translateY(20px)';
+                toast.style.opacity = '0';
+                toast.addEventListener('transitionend', () => toast.remove());
+            }, 3000);
+        }
+
+        btnPrimary.addEventListener('click', () => {
+            window.location.href = '/diddy';
+        });
+
+        btnSecondary.addEventListener('click', () => {
+            window.location.href = '/diddy';
+        });
+
+    </script>
+</body>
+</html>
