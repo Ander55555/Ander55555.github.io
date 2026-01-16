@@ -286,7 +286,7 @@
                 </button>
 
                 <button id="btnSecondary" class="btn-hack-secondary px-8 py-4 font-bold text-sm tracking-widest uppercase">
-                    void
+                    github
                 </button>
             </div>
             
@@ -741,7 +741,12 @@
             }, 1000);
         });
         
-        btnSecondary.addEventListener('click', () => { showToast("ENTERING THE VOID..."); });
+        btnSecondary.addEventListener('click', () => { 
+            showToast("INITIATING github PROTOCOL...");
+            setTimeout(() => {
+                window.location.href = '/Github/index.html';
+            }, 1000);
+        });
     </script>
 </body>
 </html>
