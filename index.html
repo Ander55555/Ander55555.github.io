@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROOT_ACCESS_GRANTED</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase SDK -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* System Override */
+        :root {
+            --neon-green: #00ff41;
+            --dark-green: #0d260d;
+            --black-bg: #050505;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--black-bg);
+            color: var(--neon-green);
+            overflow: hidden;
+        }
+
+        /* --- CRT & Scanline Effects --- */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 255, 65, 0.02);
+            z-index: 11;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+
+        /* --- Matrix Canvas --- */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        /* --- Terminal Card --- */
+        .terminal-card {
+            background: rgba(0, 10, 0, 0.85);
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2), inset 0 0 40px rgba(0, 255, 65, 0.1);
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        /* Corner decorations */
+        .corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--neon-green);
+            transition: all 0.3s ease;
+        }
+        .tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        /* --- Glitch Text --- */
+        .glitch-text {
+            position: relative;
+            color: var(--neon-green);
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--black-bg);
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(38px, 9999px, 81px, 0); }
+            20% { clip: rect(6px, 9999px, 9px, 0); }
+            40% { clip: rect(68px, 9999px, 34px, 0); }
+            60% { clip: rect(51px, 9999px, 15px, 0); }
+            80% { clip: rect(9px, 9999px, 93px, 0); }
+            100% { clip: rect(45px, 9999px, 60px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(58px, 9999px, 91px, 0); }
+            20% { clip: rect(16px, 9999px, 29px, 0); }
+            40% { clip: rect(28px, 9999px, 84px, 0); }
+            60% { clip: rect(11px, 9999px, 5px, 0); }
+            80% { clip: rect(39px, 9999px, 23px, 0); }
+            100% { clip: rect(25px, 9999px, 40px, 0); }
+        }
+
+        /* --- Hacker Buttons --- */
+        .btn-hack-primary {
+            background: var(--neon-green);
+            color: #000;
+            border: 1px solid var(--neon-green);
+            position: relative;
+            z-index: 1;
+            transition: all 0.2s;
+        }
+        
+        .btn-hack-primary:hover {
+            box-shadow: 0 0 15px var(--neon-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-hack-secondary {
+            background: transparent;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .btn-hack-secondary:hover {
+            background: rgba(0, 255, 65, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        /* --- Modal Styles --- */
+        .hacker-input {
+            background: rgba(0, 20, 0, 0.6);
+            border: 1px solid #004400;
+            color: var(--neon-green);
+            transition: all 0.3s;
+        }
+        .hacker-input:focus {
+            outline: none;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+            background: rgba(0, 30, 0, 0.8);
+        }
+        .hacker-input::placeholder { color: #005511; }
+
+        /* Typewriter Cursor */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            background-color: var(--neon-green);
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Toast Hack */
+        .toast-hack {
+            background: #000;
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Shop Grid */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .shop-item {
+            border: 1px solid #004400;
+            padding: 10px;
+            background: rgba(0,15,0,0.5);
+            transition: all 0.2s;
+        }
+        .shop-item:hover {
+            border-color: var(--neon-green);
+            background: rgba(0,30,0,0.6);
+        }
+        /* Custom Scrollbar */
+        .shop-grid::-webkit-scrollbar { width: 5px; }
+        .shop-grid::-webkit-scrollbar-track { background: #001100; }
+        .shop-grid::-webkit-scrollbar-thumb { background: #005500; }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center relative">
+
+    <!-- FX Layers -->
+    <div class="scanlines"></div>
+    <div class="crt-flicker"></div>
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Main Interface -->
+    <div class="relative z-20 w-full max-w-2xl mx-4">
+        <div class="terminal-card p-8 md:p-12">
+            <!-- Decorative Corners -->
+            <div class="corner tl"></div>
+            <div class="corner tr"></div>
+            <div class="corner bl"></div>
+            <div class="corner br"></div>
+
+            <!-- Header Bar -->
+            <div class="flex justify-between items-center mb-8 border-b border-green-900/50 pb-4">
+                <div class="text-xs tracking-widest flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    STATUS: CONNECTED
+                </div>
+                
+                <!-- LOGIN & SHOP BUTTONS -->
+                <div class="flex items-center gap-4">
+                    <div class="text-xs opacity-50 hidden sm:block">UID: 0x49310</div>
+                    
+                    <!-- SHOP BUTTON -->
+                    <button onclick="openShop()" class="btn-hack-secondary px-3 py-1 text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-green-500/10 transition-all">
+                        SHOP
+                    </button>
+
+                    <!-- EQUIP BUTTON -->
+                    <button onclick="openEquip()" class="btn-hack-secondary px-3 py-1 text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-green-500/10 transition-all">
+                        EQUIP
+                    </button>
+
+                    <!-- LOGIN BUTTON -->
+                    <button id="loginBtn" onclick="toggleLoginModal()" class="btn-hack-secondary px-3 py-1 text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-green-500/10 transition-all">
+                        LOGIN
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tighter" style="text-shadow: 0 0 10px rgba(0,255,65,0.5);">
+                SYSTEM <br/>
+                <span class="glitch-text text-5xl md:text-7xl block mt-2" data-text="OVERRIDE">OVERRIDE</span>
+            </h1>
+            
+            <p class="text-green-400/80 mb-10 text-lg leading-relaxed max-w-lg font-light">
+                <span id="typewriter"></span><span class="cursor">&nbsp;</span>
+            </p>
+
+            <!-- Command Inputs (Buttons) -->
+            <div class="flex flex-col sm:flex-row gap-5 mt-8">
+                <button id="btnPrimary" class="btn-hack-primary px-8 py-4 font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-3 group">
+                    <span>gn</span>
+                </button>
+
+                <button id="btnSecondary" class="btn-hack-secondary px-8 py-4 font-bold text-sm tracking-widest uppercase">
+                    void
+                </button>
+            </div>
+            
+            <!-- Bottom Stats -->
+            <div class="mt-10 flex gap-4 text-[10px] text-green-700 font-mono uppercase">
+                <div>MEM: 128GB</div>
+                <div>//</div>
+                <div>CPU: 128 CORE</div>
+                <div>//</div>
+                <div>NET: ENCRYPTED</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL OVERLAY -->
+    <div id="loginModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="relative w-full max-w-md mx-4">
+            <div class="terminal-card p-8 bg-black/80 backdrop-blur-md">
+                <button onclick="toggleLoginModal()" class="absolute top-4 right-4 text-green-500 hover:text-white">[X]</button>
+                <div class="border-b border-green-900/50 pb-4 mb-6 flex justify-between items-center">
+                    <div class="text-xs tracking-widest text-green-500">AUTHENTICATION REQUIRED</div>
+                    <div class="text-[10px] text-green-800">PORT: 8080</div>
+                </div>
+                <h2 class="text-2xl font-bold mb-6 tracking-widest text-center"><span class="text-white">></span> IDENTIFY_USER</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider mb-2 opacity-70">User_Email_</label>
+                        <input type="email" id="email" class="hacker-input w-full p-3 font-mono text-sm" placeholder="user@net.local">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider mb-2 opacity-70">Passcode_</label>
+                        <input type="password" id="password" class="hacker-input w-full p-3 font-mono text-sm" placeholder="********">
+                    </div>
+                    <div id="statusMessage" class="text-xs min-h-[1.5em] text-center font-bold animate-pulse text-red-500 hidden">ACCESS DENIED</div>
+                    <div class="pt-4 flex flex-col gap-3">
+                        <button onclick="handleLogin()" class="btn-hack-primary w-full py-3 font-bold tracking-widest text-sm uppercase">INIT_SESSION</button>
+                        <button onclick="handleSignUp()" class="btn-hack-secondary w-full py-3 font-bold tracking-widest text-sm uppercase">CREATE_NEW_ID</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHOP MODAL OVERLAY -->
+    <div id="shopModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="relative w-full max-w-4xl mx-4">
+            <!-- UPDATED: bg-black/80 and backdrop-blur-md for transparency -->
+            <div class="terminal-card p-6 bg-black/80 backdrop-blur-md border-2 border-green-500 shadow-[0_0_50px_rgba(0,255,65,0.1)]">
+                <button onclick="toggleShopModal()" class="absolute top-4 right-4 text-green-500 hover:text-white font-bold text-xl">[CLOSE_MARKET]</button>
+                
+                <div class="border-b border-green-900/50 pb-4 mb-6 flex justify-between items-center">
+                    <div class="text-xs tracking-widest text-green-500 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                        BLACK_MARKET
+                    </div>
+                    <div class="text-xs font-mono">
+                        <span class="text-green-800 mr-2">CREDITS:</span>
+                        <span id="shopBalanceDisplay" class="text-neon-green font-bold text-lg">$0.00</span>
+                    </div>
+                </div>
+
+                <h2 class="text-3xl font-bold mb-6 tracking-tighter text-center">
+                    <span class="text-white">></span> HARDWARE_ACQUISITION
+                </h2>
+
+                <div class="shop-grid">
+                    <!-- Item 1: Cursor A -->
+                    <div class="shop-item flex flex-col justify-between h-full bg-black/50">
+                        <div class="w-full h-32 bg-green-900/20 mb-3 flex items-center justify-center border border-green-900/50">
+                            <span class="text-4xl">⌖</span>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-sm">Cursor_Alpha</h3>
+                                <span class="text-green-400 font-bold">$10.00</span>
+                            </div>
+                            <p class="text-[10px] text-green-600 mb-4 leading-tight">Standard issue tactical pointer. High precision.</p>
+                        </div>
+                        <button onclick="buyItem(10.00, 'Cursor_Alpha', '⌖', 'https://ander55555.github.io/img/cursor.png')" class="btn-hack-secondary w-full py-2 text-xs font-bold hover:bg-green-500 hover:text-black">ACQUIRE</button>
+                    </div>
+
+                    <!-- Item 2: Cursor B -->
+                    <div class="shop-item flex flex-col justify-between h-full bg-black/50">
+                        <div class="w-full h-32 bg-green-900/20 mb-3 flex items-center justify-center border border-green-900/50">
+                            <span class="text-4xl">◈</span>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-sm">Cursor_Beta</h3>
+                                <span class="text-green-400 font-bold">$20.00</span>
+                            </div>
+                            <p class="text-[10px] text-green-600 mb-4 leading-tight">Advanced targeting reticle. Animated tracking.</p>
+                        </div>
+                        <button onclick="buyItem(20.00, 'Cursor_Beta', '◈', 'https://ander55555.github.io/img/cursor2.png')" class="btn-hack-secondary w-full py-2 text-xs font-bold hover:bg-green-500 hover:text-black">ACQUIRE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EQUIPMENT MODAL OVERLAY -->
+    <div id="equipModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="relative w-full max-w-4xl mx-4">
+            <!-- UPDATED: bg-black/80 and backdrop-blur-md for transparency -->
+            <div class="terminal-card p-6 bg-black/80 backdrop-blur-md border-2 border-green-500 shadow-[0_0_50px_rgba(0,255,65,0.1)]">
+                <button onclick="toggleEquipModal()" class="absolute top-4 right-4 text-green-500 hover:text-white font-bold text-xl">[CLOSE_INVENTORY]</button>
+                
+                <div class="border-b border-green-900/50 pb-4 mb-6 flex justify-between items-center">
+                    <div class="text-xs tracking-widest text-green-500 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                        INVENTORY_SYSTEM
+                    </div>
+                    <div class="text-[10px] text-green-800">STATUS: ONLINE</div>
+                </div>
+
+                <h2 class="text-3xl font-bold mb-6 tracking-tighter text-center">
+                    <span class="text-white">></span> HARDWARE_EQUIPMENT
+                </h2>
+
+                <!-- Inventory Grid -->
+                <div id="inventoryGrid" class="shop-grid">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div id="emptyInventoryMsg" class="hidden text-center text-green-800 py-10 font-mono">
+                    NO_HARDWARE_DETECTED_
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="toastContainer" class="fixed bottom-10 left-0 right-0 flex flex-col items-center pointer-events-none z-50 gap-3"></div>
+
+    <script>
+        // --- SUPABASE CONFIG ---
+        const SUPABASE_URL = 'https://frrymcgieanypgwnysoj.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZycnltY2dpZWFueXBnd255c29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc1ODQzNDgsImV4cCI6MjA4MzE2MDM0OH0.mHuFc_euJgEvsos1WKSbwEVEp-WrWwBCP1Bdh2_HOxM';
+        
+        let supabaseClient = null;
+        try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } 
+        catch (e) { console.error("Supabase failed to init:", e); }
+
+        // --- ECONOMY SYSTEM (DATABASE SYNC) ---
+        let playerBalance = 0.00;
+        let currentUser = null;
+        // Local inventory array
+        let inventory = JSON.parse(localStorage.getItem('hacker_inventory')) || [];
+        // Local equipped cursor
+        let equippedCursor = localStorage.getItem('hacker_equipped_cursor');
+        
+        // Restore cursor on load if exists
+        if (equippedCursor) {
+            applyCursor(equippedCursor);
+        }
+
+        const balanceDisplay = document.getElementById('shopBalanceDisplay');
+        const loginBtn = document.getElementById('loginBtn');
+        const inventoryGrid = document.getElementById('inventoryGrid');
+        const emptyInventoryMsg = document.getElementById('emptyInventoryMsg');
+
+        // Update UI helper
+        function updateBalanceUI() {
+            balanceDisplay.innerText = `$${playerBalance.toFixed(2)}`;
+        }
+
+        // 1. Fetch Balance from Database
+        async function fetchBalance() {
+            if (!currentUser) return;
+            
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select('balance')
+                .eq('id', currentUser.id)
+                .maybeSingle();
+
+            if (error) {
+                console.error("Error fetching balance:", error);
+                if (error.code === '42703') {
+                    showToast("DB ERROR: Missing 'balance' column. Run SQL Fix.", 'error');
+                }
+                return;
+            }
+
+            if (data) {
+                playerBalance = parseFloat(data.balance);
+                updateBalanceUI();
+            } else {
+                console.log("Profile missing in DB. Attempting to create one...");
+                const { error: insertError } = await supabaseClient
+                    .from('profiles')
+                    .insert([{ id: currentUser.id, email: currentUser.email, balance: 0.00 }]);
+                
+                if (!insertError) {
+                    playerBalance = 0.00;
+                    updateBalanceUI();
+                    showToast("PROFILE CREATED SUCCESSFULLY");
+                }
+            }
+        }
+
+        // 2. Save Balance to Database
+        async function updateDatabaseBalance(newBalance) {
+            if (!currentUser) return;
+
+            const { error } = await supabaseClient
+                .from('profiles')
+                .update({ balance: newBalance })
+                .eq('id', currentUser.id);
+            
+            if (error) { console.error("Error saving balance:", error); }
+        }
+
+        // 3. Mining Loop: Earn $1 every 60 seconds
+        setInterval(async () => {
+            playerBalance += 1.00;
+            updateBalanceUI();
+            showToast("MINING COMPLETED: +$1.00 CREDITS");
+            
+            if (currentUser) {
+                await updateDatabaseBalance(playerBalance);
+            }
+        }, 60000);
+
+        // 4. Buy Function
+        async function buyItem(price, itemName, icon, cursorFile) {
+            // Check if already owned
+            if (inventory.some(item => item.name === itemName)) {
+                showToast("ERROR: ITEM ALREADY OWNED", 'error');
+                return;
+            }
+
+            if (playerBalance >= price) {
+                playerBalance -= price;
+                updateBalanceUI();
+                
+                // Add to local inventory with file path
+                inventory.push({ name: itemName, icon: icon, file: cursorFile });
+                localStorage.setItem('hacker_inventory', JSON.stringify(inventory));
+                
+                showToast(`ACQUIRED: ${itemName}`);
+                
+                if (currentUser) {
+                    await updateDatabaseBalance(playerBalance);
+                } else {
+                    showToast("WARNING: LOCAL MODE ONLY (NOT SAVED)", 'error');
+                }
+            } else {
+                showToast(`ERROR: INSUFFICIENT FUNDS ($${(price - playerBalance).toFixed(2)} NEEDED)`, 'error');
+            }
+        }
+
+        // 5. Render Inventory
+        function renderInventory() {
+            inventoryGrid.innerHTML = '';
+            if (inventory.length === 0) {
+                emptyInventoryMsg.classList.remove('hidden');
+                return;
+            }
+            emptyInventoryMsg.classList.add('hidden');
+
+            inventory.forEach((item) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'shop-item flex flex-col justify-between h-full';
+                itemDiv.innerHTML = `
+                    <div class="w-full h-20 bg-green-900/20 mb-3 flex items-center justify-center border border-green-900/50">
+                        <span class="text-3xl">${item.icon}</span>
+                    </div>
+                    <div>
+                        <div class="mb-2">
+                            <h3 class="font-bold text-xs">${item.name}</h3>
+                            <span class="text-[10px] text-green-600">OWNED</span>
+                        </div>
+                    </div>
+                    <!-- Pass filename in quotes to avoid syntax errors with spaces -->
+                    <button onclick="equipItem('${item.name}', '${item.file}')" class="btn-hack-secondary w-full py-2 text-xs font-bold hover:bg-green-500 hover:text-black">EQUIP</button>
+                `;
+                inventoryGrid.appendChild(itemDiv);
+            });
+        }
+
+        function equipItem(name, file) {
+            showToast(`EQUIPPED: ${name}`);
+            applyCursor(file);
+            localStorage.setItem('hacker_equipped_cursor', file);
+            toggleEquipModal();
+        }
+
+        function applyCursor(file) {
+            const styleId = 'custom-cursor-style';
+            let styleTag = document.getElementById(styleId);
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                styleTag.id = styleId;
+                document.head.appendChild(styleTag);
+            }
+            
+            // UPDATED: Use quotes around URL and add crosshair fallback
+            styleTag.innerHTML = `
+                *, html, body, button, a { 
+                    cursor: url("${file}"), crosshair !important; 
+                }
+            `;
+        }
+
+        // Check for existing session on load
+        async function checkSession() {
+            const { data } = await supabaseClient.auth.getSession();
+            if (data.session) {
+                currentUser = data.session.user;
+                loginBtn.innerText = "LOGOUT";
+                loginBtn.onclick = handleLogout;
+                fetchBalance();
+            }
+        }
+        checkSession();
+
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        }
+
+        // --- Typewriter Effect ---
+        const textToType = "Access restricted. Decryption key required for entry. Protocol 7 initiated...";
+        const typeWriterElement = document.getElementById('typewriter');
+        let i = 0;
+        function typeWriter() {
+            if (i < textToType.length) {
+                typeWriterElement.innerHTML += textToType.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        setTimeout(typeWriter, 1000);
+
+        // --- Matrix Rain Animation ---
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const fontSize = 16;
+        const columns = canvas.width/fontSize;
+        const drops = Array(Math.ceil(columns)).fill(1);
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+            for(let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 30);
+
+        // --- Interaction Logic ---
+        const btnPrimary = document.getElementById('btnPrimary');
+        const btnSecondary = document.getElementById('btnSecondary');
+        const toastContainer = document.getElementById('toastContainer');
+        const loginModal = document.getElementById('loginModal');
+        const shopModal = document.getElementById('shopModal');
+        const equipModal = document.getElementById('equipModal');
+        const statusMsg = document.getElementById('statusMessage');
+
+        function toggleLoginModal() { loginModal.classList.toggle('hidden'); }
+        function toggleShopModal() { 
+            shopModal.classList.toggle('hidden'); 
+            updateBalanceUI();
+        }
+        
+        function toggleEquipModal() {
+            equipModal.classList.toggle('hidden');
+        }
+
+        function openShop() {
+            showToast("CONNECTING TO BLACK_MARKET...");
+            setTimeout(() => {
+                showToast("ESTABLISHED: LISTING HARDWARE...");
+                toggleShopModal(); 
+            }, 800);
+        }
+
+        function openEquip() {
+            showToast("SCANNING LOCAL INVENTORY...");
+            setTimeout(() => {
+                renderInventory();
+                toggleEquipModal();
+            }, 600);
+        }
+
+        function setMsg(text, isError = true) {
+            statusMsg.innerText = text;
+            statusMsg.classList.remove('hidden', 'text-red-500', 'text-green-400');
+            statusMsg.classList.add(isError ? 'text-red-500' : 'text-green-400');
+            statusMsg.classList.remove('hidden');
+        }
+
+        async function handleLogin() {
+            if (!supabaseClient) { setMsg("SYSTEM ERROR: API KEYS MISSING", true); return; }
+            setMsg("DECRYPTING...", false);
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) { setMsg("ACCESS_DENIED: " + error.message, true); } 
+            else {
+                setMsg("ACCESS_GRANTED", false);
+                currentUser = data.user;
+                loginBtn.innerText = "LOGOUT";
+                loginBtn.onclick = handleLogout;
+                await fetchBalance();
+                setTimeout(() => toggleLoginModal(), 1000);
+                showToast("USER AUTHENTICATED");
+            }
+        }
+
+        async function handleSignUp() {
+            if (!supabaseClient) { setMsg("SYSTEM ERROR: API KEYS MISSING", true); return; }
+            setMsg("GENERATING ID...", false);
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
+            if (error) { setMsg("ERROR: " + error.message, true); } 
+            else { setMsg("CONFIRMATION_SENT_TO_EMAIL", false); }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-hack pointer-events-auto flex items-center gap-4 px-6 py-3 border shadow-2xl min-w-[300px] bg-black`;
+            if (type === 'error') {
+                toast.style.borderColor = 'red';
+                toast.style.color = 'red';
+                toast.style.boxShadow = '0 0 10px rgba(255, 0, 0, 0.5)';
+            }
+            toast.innerHTML = `<div class="font-bold text-xl">></div><div class="flex flex-col"><span class="font-bold text-xs uppercase tracking-widest opacity-80">System Message</span><span class="text-sm font-mono">${message}</span></div>`;
+            toastContainer.appendChild(toast);
+            toast.style.transform = 'translateY(20px)';
+            toast.style.opacity = '0';
+            toast.style.transition = 'all 0.3s ease';
+            requestAnimationFrame(() => { toast.style.transform = 'translateY(0)'; toast.style.opacity = '1'; });
+            setTimeout(() => { toast.style.transform = 'translateY(20px)'; toast.style.opacity = '0'; toast.addEventListener('transitionend', () => toast.remove()); }, 3000);
+        }
+
+        // UPDATED: Added redirection to /gn.html
+        btnPrimary.addEventListener('click', () => { 
+            showToast("INITIATING GN PROTOCOL...");
+            setTimeout(() => {
+                window.location.href = '/gn.html';
+            }, 1000);
+        });
+        
+        btnSecondary.addEventListener('click', () => { showToast("ENTERING THE VOID..."); });
+    </script>
+</body>
+</html>
